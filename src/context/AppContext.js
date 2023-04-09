@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react';
 
 // 5. The reducer - this is used to update the state, based on the action
 export const AppReducer = (state, action) => {
-    let budget = 0;
+    let Budget = 0;
     switch (action.type) {
         case 'ADD_EXPENSE':
             let total_budget = 0;
@@ -13,7 +13,7 @@ export const AppReducer = (state, action) => {
             );
             total_budget = total_budget + action.payload.cost;
             action.type = "DONE";
-            if(total_budget <= state.budget) {
+            if(total_budget <= state.Budget) {
                 total_budget = 0;
                 state.expenses.map((currentExp)=> {
                     if(currentExp.name === action.payload.name) {
@@ -25,7 +25,8 @@ export const AppReducer = (state, action) => {
                     ...state,
                 };
             } else {
-                alert("Cannot increase the allocation! Out of funds");
+                //alert("Cannot increase the allocation! Out of funds");
+                alert("Youn Cannot reduce the budget lower than spending");
                 return {
                     ...state
                 }
@@ -34,7 +35,7 @@ export const AppReducer = (state, action) => {
                 const red_expenses = state.expenses.map((currentExp)=> {
                     if (currentExp.name === action.payload.name && currentExp.cost - action.payload.cost >= 0) {
                         currentExp.cost =  currentExp.cost - action.payload.cost;
-                        budget = state.budget + action.payload.cost
+                        Budget = state.Budget + action.payload.cost
                     }
                     return currentExp
                 })
@@ -47,7 +48,7 @@ export const AppReducer = (state, action) => {
             action.type = "DONE";
             state.expenses.map((currentExp)=> {
                 if (currentExp.name === action.payload) {
-                    budget = state.budget + currentExp.cost
+                    Budget = state.Budget + currentExp.cost
                     currentExp.cost =  0;
                 }
                 return currentExp
@@ -55,18 +56,18 @@ export const AppReducer = (state, action) => {
             action.type = "DONE";
             return {
                 ...state,
-                budget
+                Budget
             };
         case 'SET_BUDGET':
             action.type = "DONE";
-            state.budget = action.payload;
+            state.Budget = action.payload;
 
             return {
                 ...state,
             };
-        case 'CHG_CURRENCY':
+        case 'CHG_Currency':
             action.type = "DONE";
-            state.currency = action.payload;
+            state.Currency = action.payload;
             return {
                 ...state
             }
@@ -78,7 +79,7 @@ export const AppReducer = (state, action) => {
 
 // 1. Sets the initial state when the app loads
 const initialState = {
-    budget: 2000,
+    Budget: 2000,
     expenses: [
         { id: "Marketing", name: 'Marketing', cost: 50 },
         { id: "Finance", name: 'Finance', cost: 300 },
@@ -86,7 +87,7 @@ const initialState = {
         { id: "Human Resource", name: 'Human Resource', cost: 40 },
         { id: "IT", name: 'IT', cost: 500 },
     ],
-    currency: '£'
+    Currency: '£'
 };
 
 // 2. Creates the context this is the thing our components import and use to get the state
@@ -103,17 +104,17 @@ export const AppProvider = (props) => {
             const totalExpenses = state.expenses.reduce((total, item) => {
             return (total = total + item.cost);
         }, 0);
-        remaining = state.budget - totalExpenses;
+        remaining = state.Budget - totalExpenses;
     }
 
     return (
         <AppContext.Provider
             value={{
                 expenses: state.expenses,
-                budget: state.budget,
+                Budget: state.Budget,
                 remaining: remaining,
                 dispatch,
-                currency: state.currency
+                Currency: state.Currency
             }}
         >
             {props.children}
